@@ -62,7 +62,7 @@ jobs:
           echo "CommitsSinceVersionSource: ${{ steps.gitversion.outputs.commitsSinceVersionSource }}"
           echo "CommitsSinceVersionSourcePadded: ${{ steps.gitversion.outputs.commitsSinceVersionSourcePadded }}"
           echo "CommitDate: ${{ steps.gitversion.outputs.commitDate }}"
-          
+
       - name: Build image
         run: docker build . --file Dockerfile --tag $IMAGE_NAME --label "runnumber=${GITHUB_RUN_ID}"
 
@@ -84,4 +84,6 @@ jobs:
           echo IMAGE_ID=$IMAGE_ID
           echo VERSION=$VERSION
           docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
+          docker tag $IMAGE_NAME $IMAGE_ID:latest
           docker push $IMAGE_ID:$VERSION
+          docker push $IMAGE_ID:latest
