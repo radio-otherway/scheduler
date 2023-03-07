@@ -19,8 +19,9 @@ jobs:
     
     steps:
       - uses: actions/checkout@v3
-        run: |
-          git fetch --prune --unshallow
+
+      - name: Fetch all history for all tags and branches
+        run: git fetch --prune --unshallow
 
       - name: Install gitversion
         uses: gittools/actions/gitversion/setup@v0.9.7
