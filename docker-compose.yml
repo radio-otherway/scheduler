@@ -1,0 +1,38 @@
+version: '3.9'
+
+services:
+  diun:
+    image: crazymax/diun:latest
+    network_mode: "bridge"
+    container_name: diun
+    volumes:
+      - "/volume1/docker/diun:/data"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    environment:
+      - "TZ=Europe/Dublin"
+      - "LOG_LEVEL=info"
+      - "LOG_JSON=false"
+      - "DIUN_WATCH_WORKERS=20"
+      - "DIUN_WATCH_SCHEDULE=0 0 * * *"
+      - "DIUN_PROVIDERS_DOCKER=true"
+      - "DIUN_PROVIDERS_DOCKER_WATCHBYDEFAULT=true"
+      - "DIUN_NOTIF_SLACK_WEBHOOKURL=https://hooks.slack.com/services/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"
+      - "DIUN_NOTIF_SLACK_RENDERFIELDS=true"
+    restart: always
+  scheduler:
+    image: ghcr.io/radio-otherway/radio-otherway-scheduler:latest
+    container_name: otherway-scheduler
+    restart: unless-stopped
+    networks:
+      - "traefik_proxy"
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.scheduler.rule=Host(`scheduler.radio-otherway.com`)
+      - traefik.http.routers.scheduler.entrypoints=websecure
+      - traefik.http.routers.scheduler.tls.certresolver=noodles-resolver
+      - diun.enable=true
+      - diun.watch_repo=true
+networks:
+  traefik_proxy:
+    external: true
+    name: traefik_proxy

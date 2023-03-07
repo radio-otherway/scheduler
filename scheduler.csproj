@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <RootNamespace>OtherWay.Radio.Scheduler</RootNamespace>
+        <AssemblyName>OtherWay.Radio.Scheduler</AssemblyName>
+        <Authors>PodNoms</Authors>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <UserSecretsId>5436352f-2c05-47e2-9380-3fe797ee0c86</UserSecretsId>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="CrystalQuartz.AspNetCore" Version="6.8.1" />
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.2" />
+        <PackageReference Include="Quartz.AspNetCore" Version="3.6.2" />
+        <PackageReference Include="Quartz.Extensions.DependencyInjection" Version="3.6.2" />
+        <PackageReference Include="Quartz.Extensions.Hosting" Version="3.6.2" />
+        <PackageReference Include="QuartzNetWebConsole" Version="1.0.2" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include=".github\workflows\gitversion.yml" />
+        <Content Include=".github\workflows\build-docker-image.yml" />
+    </ItemGroup>
+</Project>
