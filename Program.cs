@@ -30,6 +30,19 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpClients(builder.Configuration["ServiceSettings:ApiUrl"]);
 
+builder.Services.AddCors(options => {
+  options.AddPolicy(name: "AllowSpecificOrigins",
+    policy => {
+      policy.WithOrigins(
+        "https://otherway.dev.fergl.ie:3000",
+        "https://radio-otherway.com",
+        "https://www.radio-otherway.com");
+      policy
+        .AllowAnyHeader()
+        .AllowCredentials()
+        .AllowAnyMethod();
+    });
+});
 builder.Services.AddJobScheduler();
 var app = builder.Build();
 
@@ -41,6 +54,7 @@ if (app.Environment.IsDevelopment()) {
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+app.UseCors("AllowSpecificOrigins");
 
 app.MapControllers();
 

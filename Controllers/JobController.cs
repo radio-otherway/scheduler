@@ -11,10 +11,13 @@ namespace OtherWay.Radio.Scheduler.Controllers;
 public class JobController : ControllerBase {
   private readonly ISchedulerFactory _schedulerFactory;
   private readonly ScheduleLoader _scheduleLoader;
+  private readonly ILogger<JobController> _logger;
 
-  public JobController(ISchedulerFactory schedulerFactory, ScheduleLoader scheduleLoader) {
+  public JobController(ISchedulerFactory schedulerFactory, ScheduleLoader scheduleLoader,
+    ILogger<JobController> logger) {
     _schedulerFactory = schedulerFactory;
     _scheduleLoader = scheduleLoader;
+    _logger = logger;
   }
 
   [HttpGet]
@@ -37,9 +40,17 @@ public class JobController : ControllerBase {
   }
 
   [HttpPost("trigger")]
-  public async Task<OkObjectResult> Run(string jobName) {
-    var scheduler = await _schedulerFactory.GetScheduler();
-    await scheduler.TriggerJob(new JobKey(jobName));
-    return Ok("OK");
+  public async Task<IActionResult> Run([FromBody] JobStartRequestModel request) {
+    try {
+      var scheduler = await _schedulerFactory.GetScheduler();
+      await scheduler.TriggerJob(new JobKey(request.JobName, request.Group));
+      return Ok("OK");
+    }
+    catch (Quartz.JobPersistenceException e) {
+      _logger.LogError("Unable to start job {Job}", request.JobName);
+      _logger.LogError(e.Message);
+    }
+
+    return NotFound();
   }
 }
