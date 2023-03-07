@@ -5,14 +5,40 @@ on:
     branches:
       - trunk
       - develop
-
-    # Publish `v1.2.3` tags as releases.
     tags:
       - v*
 env:
   IMAGE_NAME: radio-otherway-scheduler
 
 jobs:
+  install-gitversion:
+    name: Install gitversion
+    runs-on: ubuntu-latest
+    uses: gittools/actions/gitversion/setup@v0.9.7
+    with:
+      versionSpec: '5.x'
+
+  calculate-version:
+    name: Calculate Version
+    runs-on: ubuntu-latest
+    outputs:
+      semVer: ${{ steps.gitversion.outputs.semVer }}
+    steps:
+      - name: Determine Version
+        id: gitversion
+        uses: gittools/actions/gitversion/execute@v0.9.7
+
+  display-semver:
+    name: Display Semantic Version
+    runs-on: ubuntu-latest
+    needs: calculate-version
+    env:
+      SEMVER: ${{ needs.calculate-version.outputs.semVer }}
+    steps:
+      - name: Display version
+        run: |
+          echo SemVer: $SEMVER    
+          
   build:
     runs-on: ubuntu-latest
     permissions:
@@ -34,7 +60,7 @@ jobs:
           # Change all uppercase to lowercase
           IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
           # Strip git ref prefix from version
-          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+          VERSION=$(echo "$SEMVER" | sed -e 's,.*/\(.*\),\1,')
           # Strip "v" prefix from tag name
           [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
           # Use Docker `latest` tag convention
