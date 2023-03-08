@@ -16,7 +16,7 @@ services:
       - "DIUN_WATCH_SCHEDULE=0 0 * * *"
       - "DIUN_PROVIDERS_DOCKER=true"
       - "DIUN_PROVIDERS_DOCKER_WATCHBYDEFAULT=true"
-      - "DIUN_NOTIF_SLACK_WEBHOOKURL=https://hooks.slack.com/services/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"
+      - "DIUN_NOTIF_SLACK_WEBHOOKURL=https://hooks.slack.com/services/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"
       - "DIUN_NOTIF_SLACK_RENDERFIELDS=true"
     restart: always
   scheduler:
